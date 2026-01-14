@@ -69,17 +69,22 @@ jobs:
       - name: Update Version in README
         if: steps.check_tag.outputs.exists == 'false'
         run: |
-          NEW_VERSION="${{ steps.get_version.outputs.VERSION }}"
-          # Szukamy badge i podmieniamy wersję
-          sed -i "s/version-.*-orange/version-${NEW_VERSION}-orange/g" README.md || echo "No badge found"
+          # Pobierz czystą wersję (np. 1.0.0-Beta-1)
+          RAW_VERSION="${{ steps.get_version.outputs.VERSION }}"
+          
+          # Przygotuj wersję pod Shields.io (zamień '-' na '--' i ' ' na '_')
+          # To naprawia błąd 404 przy wersjach Beta/Alpha
+          SAFE_VERSION=$(echo "$RAW_VERSION" | sed 's/-/--/g' | sed 's/ /_/g')
+          
+          # Podmień link w README.md
+          sed -i "s/version-.*-orange/version-${SAFE_VERSION}-orange/g" README.md || echo "No badge found"
           
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           git add README.md
-          # Commituj tylko jeśli plik się zmienił
           if ! git diff --cached --quiet; then
-            git commit -m "chore: update version in README to ${NEW_VERSION} [skip ci]"
+            git commit -m "chore: update version in README to ${RAW_VERSION} [skip ci]"
             git push
           fi
 
