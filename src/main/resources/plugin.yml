@@ -1,6 +1,6 @@
 name: ZGuard
 main: me.thezombiepl.plugin.zguard.ZGuardPlugin
-version: 1.0.0-Beta-2
+version: 1.0.0-Beta-3
 authors: [THEzombiePL]
 api-version: 1.13
 description: Advanced VPN and proxy protection for Minecraft servers

@@ -12,6 +12,7 @@ import lombok.Getter;
 import me.thezombiepl.plugin.zguard.check.VpnCheckService;
 import me.thezombiepl.plugin.zguard.check.VpnDecision;
 import me.thezombiepl.plugin.zguard.commands.ZGuardCommand;
+import me.thezombiepl.plugin.zguard.velocity.listeners.VelocityLoginListener;
 import me.thezombiepl.plugin.zguard.velocity.listeners.VelocityPreLoginListener;
 import me.thezombiepl.plugin.zcore.command.CommandRegistry;
 import me.thezombiepl.plugin.zcore.config.ConfigManager;
@@ -25,6 +26,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Plugin(
     id = "zguard",
@@ -54,6 +57,9 @@ public class ZGuardVelocity implements ZGuardCommand.ReloadablePlugin {
 	@Getter private String version;
 	@Getter private String author;
 	@Getter private String website;
+
+	@Getter
+	private final Set<String> pendingVpn = ConcurrentHashMap.newKeySet();
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
@@ -93,7 +99,8 @@ public class ZGuardVelocity implements ZGuardCommand.ReloadablePlugin {
         vpnDecision = new VpnDecision(blockedKeys);
         vpnService = createVpnServiceFromConfig();
 
-        server.getEventManager().register(this, new VelocityPreLoginListener(this, server));
+        server.getEventManager().register(this, new VelocityPreLoginListener(this));
+		server.getEventManager().register(this, new VelocityLoginListener(this));
 		
 		if (configManager.getConfig().getBoolean("settings.register-commands", true)) {
 			ZGuardCommand command = new ZGuardCommand(this, messageManager);
