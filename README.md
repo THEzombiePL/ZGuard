@@ -1,6 +1,6 @@
 # 🛡️ ZGuard
 
-![Version](https://img.shields.io/badge/version-CURRENT_VERSION-orange)
+![Version](https://img.shields.io/badge/version-1.0.0-Beta-1-orange)
 ![Platform](https://img.shields.io/badge/platform-Paper%20(1.8--1.21)%20%7C%20Velocity-blue)
 ![Requires](https://img.shields.io/badge/requires-ZCore-red)
 
