@@ -7,6 +7,7 @@ plugins {
 
 group = 'me.thezombiepl.plugin'
 
+// Źródło wersji: plugin.yml
 def getPluginVersion() {
     def pluginFile = file('src/main/resources/plugin.yml')
     if (!pluginFile.exists()) return '1.0.0'
@@ -28,21 +29,24 @@ repositories {
 }
 
 dependencies {
+    // Integracja z ZCore (Monorepo lub JitPack)
     if (findProject(':ZCore') != null) {
         compileOnly project(':ZCore') 
     } else {
         compileOnly 'com.github.THEzombiePL:ZCore:v1.0.0'
     }
     
+    // Paper API (1.16.5-R0.1 wspiera legacy i modern)
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
-    compileOnly('com.github.MilkBowl:VaultAPI:1.7') {
-        exclude group: 'org.bukkit', module: 'bukkit'
-    }
+    
+    // LuckPerms API - Jedyny stabilny sposób na permisje 1.8-1.21 oraz Velocity
+    compileOnly 'net.luckperms:api:5.4'
     
     // Velocity API
     compileOnly 'com.velocitypowered:velocity-api:3.4.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:3.4.0-SNAPSHOT'
     
+    // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
@@ -51,15 +55,14 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
-// KLUCZOWE OBEJŚCIE DLA VELOCITY 3.4.0+
-// Wymusza akceptację bibliotek skompilowanych pod Javę 21 mimo celu Java 8
+// Obejście dla Velocity 3.4.0+ (Wymuszenie akceptacji JVM 21 dla zależności)
 configurations.compileClasspath {
     attributes {
         attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 21)
     }
 }
 
-// Zadanie do podmiany wersji w kodzie źródłowym
+// Przygotowanie filtrowanych źródeł (podmiana @version@ w kodzie Java)
 def filteredSourceDir = file("$buildDir/generated/sources/filtered-java")
 
 tasks.register('filterJava', Copy) {
@@ -67,6 +70,7 @@ tasks.register('filterJava', Copy) {
     from "src/main/java"
     into filteredSourceDir
     filter(ReplaceTokens, tokens: [version: version])
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE 
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -75,14 +79,15 @@ tasks.withType(JavaCompile).configureEach {
         source = filteredSourceDir
     }
     options.encoding = 'UTF-8'
-    options.release = 8 // Celujemy w Javę 8 dla kompatybilności wstecznej
+    options.release = 8 // Cel: Java 8 (Kompatybilność wsteczna)
 }
 
+// ShadowJar: Tworzenie finalnego pliku pluginu
 shadowJar {
     archiveBaseName = 'ZGuard'
     archiveClassifier = ''
     
-    // Nie usuwamy całego META-INF ze względu na velocity-plugin.json
+    // Wykluczamy śmieci, zostawiamy ważne pliki (w tym te dla Velocity)
     exclude 'META-INF/maven/**'
     exclude 'META-INF/*.SF'
     exclude 'META-INF/*.DSA'
@@ -92,5 +97,6 @@ shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+// Wyłączenie standardowego Jara na rzecz ShadowJar
 tasks.jar.enabled = false
 tasks.build.dependsOn shadowJar

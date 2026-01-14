@@ -13,6 +13,7 @@
 - ⚡ **Asynchroniczność**: Sprawdzanie adresów IP nie powoduje "lagów" serwera (TPS drops).
 
 ## 🛠️ Komendy i Uprawnienia
+
 Główna komenda: `/zguard` (alias: `/zg`)
 
 | Komenda | Opis | Uprawnienie |
@@ -20,6 +21,17 @@ Główna komenda: `/zguard` (alias: `/zg`)
 | `/zg help` | Wyświetla listę dostępnych komend | `zguard.admin` |
 | `/zg info` | Status ochrony, platforma i wersja | `zguard.admin` |
 | `/zg reload` | Przeładowuje konfigurację i pliki języków | `zguard.admin` |
+
+### 🛡️ Uprawnienia specjalne
+
+| Uprawnienie | Opis | Domyślnie |
+| :--- | :--- | :--- |
+| `zguard.*` | Pełny dostęp do wszystkich permisji pluginu | `OP` |
+| `zguard.admin` | Pozwala na zarządzanie pluginem (reload, info) | `OP` |
+| `zguard.bypass` | **Omija sprawdzanie VPN/Proxy.** Pozwala graczowi wejść na serwer mimo aktywnej ochrony. | `OP` |
+
+> [!TIP]
+> Nadaj uprawnienie `zguard.bypass` zaufanym graczom lub administracji, którzy muszą korzystać z VPN, aby uniknąć ich przypadkowego zablokowania przez system ochrony.
 
 ## 📦 Instalacja
 1. Pobierz i zainstaluj **[ZCore](https://github.com/THEzombiePL/ZCore)**.
