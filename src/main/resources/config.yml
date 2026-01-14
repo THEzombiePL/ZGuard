@@ -1,0 +1,24 @@
+config-version: 1
+
+settings:
+  language: "pl"  # Messages language (e.g. 'en', 'pl')
+  anti-vpn: true  # Whether to enable VPN/proxy blocking
+  debug: false  # Enable debug mode
+  register-commands: true # Whether to register the /zguard command
+  blocked-checks:
+    - "vpn"
+    - "proxy"
+    # - "hosting"
+    # - "is_vpn"
+    # - "is_proxy"
+    # - "is_hosting"
+    # - "is_datacenter"
+    # - "block"
+
+api:
+  url: "https://antivpn.zombiebot.pl/check/"  # API URL for VPN/proxy checking
+  timeout: 3000  # API request timeout in milliseconds
+  cacheTTL: 10  # IP Cache duration in minutes
+  headers:
+    #Authorization: "Bearer your_api_key_here"
+    User-Agent: "ZGuard/1.0"

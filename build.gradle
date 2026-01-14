@@ -1,0 +1,96 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '9.3.1'
+}
+
+group = 'me.thezombiepl.plugin'
+
+def getPluginVersion() {
+    def pluginFile = file('src/main/resources/plugin.yml')
+    if (!pluginFile.exists()) return '1.0.0'
+    def text = pluginFile.text
+    def matcher = (text =~ /(?m)^\s*version\s*:\s*(.+)\s*$/)
+    if (matcher.find()) {
+        return matcher.group(1).trim()
+    }
+    return '1.0.0'
+}
+
+version = getPluginVersion()
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+    maven { url = 'https://jitpack.io' }
+    maven { url = 'https://repo.velocitypowered.com/snapshots/' }
+}
+
+dependencies {
+    if (findProject(':ZCore') != null) {
+        compileOnly project(':ZCore') 
+    } else {
+        compileOnly 'com.github.THEzombiePL:ZCore:v1.0.0'
+    }
+    
+    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly('com.github.MilkBowl:VaultAPI:1.7') {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
+    
+    // Velocity API
+    compileOnly 'com.velocitypowered:velocity-api:3.4.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.4.0-SNAPSHOT'
+    
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
+
+// KLUCZOWE OBEJŚCIE DLA VELOCITY 3.4.0+
+// Wymusza akceptację bibliotek skompilowanych pod Javę 21 mimo celu Java 8
+configurations.compileClasspath {
+    attributes {
+        attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 21)
+    }
+}
+
+// Zadanie do podmiany wersji w kodzie źródłowym
+def filteredSourceDir = file("$buildDir/generated/sources/filtered-java")
+
+tasks.register('filterJava', Copy) {
+    inputs.property "version", version
+    from "src/main/java"
+    into filteredSourceDir
+    filter(ReplaceTokens, tokens: [version: version])
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (name == 'compileJava') {
+        dependsOn filterJava
+        source = filteredSourceDir
+    }
+    options.encoding = 'UTF-8'
+    options.release = 8 // Celujemy w Javę 8 dla kompatybilności wstecznej
+}
+
+shadowJar {
+    archiveBaseName = 'ZGuard'
+    archiveClassifier = ''
+    
+    // Nie usuwamy całego META-INF ze względu na velocity-plugin.json
+    exclude 'META-INF/maven/**'
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    
+    mergeServiceFiles()
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.jar.enabled = false
+tasks.build.dependsOn shadowJar

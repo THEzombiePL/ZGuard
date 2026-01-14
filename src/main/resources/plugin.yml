@@ -1,0 +1,24 @@
+name: ZGuard
+main: me.thezombiepl.plugin.zguard.ZGuardPlugin
+version: 1.0.0-Beta-1
+authors: [THEzombiePL]
+api-version: 1.13
+description: Advanced VPN and proxy protection for Minecraft servers
+website: https://github.com/THEzombiePL/ZGuard
+depend: [ZCore]
+
+permissions:
+  zguard.*:
+    description: Dostęp do wszystkich permisji ZGuard
+    children:
+      zguard.bypass: true
+      zguard.admin: true
+
+  zguard.bypass:
+    description: Pozwala na ominięcie sprawdzania VPN
+    default: op
+
+  zguard.admin:
+    description: Pozwala na zarządzanie pluginem
+    default: op
+

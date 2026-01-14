@@ -1,0 +1,30 @@
+messages-version: 1.0
+
+prefix: "&f[&2Z&6Guard&f] &r"
+
+vpn:
+  kickMessage: "\n&cYou cannot join – VPN/Proxy detected.\n\nIP: {ip}"
+
+messages:
+  no-permission: "&cYou don't have permission to use this command!"
+  unknown-subcommand: "&eUnknown subcommand. Use: &f/zguard help"
+  command-usage: "&eUsage: &f/zguard <reload|help|info>"
+  reload-success: "&aConfiguration and messages have been successfully reloaded!"
+  reload-error: "&cError while reloading configuration!"
+
+  # Help section (/zguard help)
+  help-header: "&e&lZGuard &8- &fCommand list:"
+  help-reload: "&7/zguard reload &8- &fReload configuration and messages"
+  help-help: "&7/zguard help &8- &fShow this help"
+  help-info: "&7/zguard info &8- &fVersion and author information"
+
+  # Info section (/zguard info)
+  info-header: "&e&lZGuard &7v{version}"
+  info-platform: "&7Platform: &f{platform}"
+  info-author: "&7Author: &f{author}"
+  info-protection: "&7Protection: &f{protection}"
+
+  # Additional messages
+  reloading: "&eReloading configuration..."
+  vpn-check-failed: "&cFailed to check VPN for player {player} ({ip})"
+  vpn-skip-local: "&7Skipping VPN check for local/internal IP: {player} ({ip})"
