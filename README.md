@@ -2,7 +2,7 @@
 ![Version](https://img.shields.io/badge/version-1.0.0--Beta--3-orange)
 ![Platform](https://img.shields.io/badge/platform-Paper%20(1.8--1.21)%20%7C%20Velocity-blue)
 ![Requires](https://img.shields.io/badge/requires-ZCore-red)
-![visitors](https://visitor-badge.laobi.icu/badge?page_id=THEzombiePL.ZGuard&format=true)
+![visitors](https://komarev.com/ghpvc/?username=thezombiepl-zguard&label=visitors)
 
 **ZGuard** to zaawansowany system ochrony przed VPN i Proxy, stworzony z myślą o maksymalnej kompatybilności. Dzięki zastosowaniu nowoczesnych bibliotek, plugin wspiera serwery od wersji **1.8** aż do najnowszych wydań **1.21+**, a także silnik proxy **Velocity**.
 
